@@ -1,21 +1,32 @@
 ember-rdfa-editor-plugin-generator
 ==============================================================================
 
-[Short description of the addon.]
+Addon to simplify the creation of a plugin for [https://github.com/lblod/ember-rdfa-editor](ember-rdfa-editor).
 
-Installation
+This package assumes you follow these conventions:
+ - package name: ember-rdfa-editor-*your-name*-plugin
+ - package scope: @lblod (to be added to your package name in `package.json` and `index.js`)
+ - no default blueprint has been defined (yet) in your plugin
+ 
+Usage:
 ------------------------------------------------------------------------------
-
 ```
-ember install ember-rdfa-editor-plugin-generator
+#create an addon
+ember addon ember-rdfa-editor-your-name-plugin
+ember install @lblod/ember-rdfa-editor-plugin-generator
+ember g editor-plugin your-name
 ```
 
+The following generated files should be modified to your liking:
 
-Usage
-------------------------------------------------------------------------------
+`blueprints/@lblod/ember-rdfa-editor-your-name-plugin/index.js` 
+This is a default blueprint which will add your plugin to the configured profile when it's installed
 
-[Longer description of how to use the addon in apps.]
+`addon/services/rdfa-editor-my-test-plugin.js` 
+The service providing hints to the editor, the execute task will be called when the content of the editor is updated. 
 
+`addon/components/editor-plugins/my-test-card.js` and `addon/templates/components/editor-plugins/my-test-card.hbs` 
+These components handle the display of hints and perform the necessary actions when they are triggered (eg applying the hint in the editor)
 
 Contributing
 ------------------------------------------------------------------------------
