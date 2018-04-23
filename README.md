@@ -10,26 +10,35 @@ This package assumes you follow these conventions:
  
 Usage:
 ------------------------------------------------------------------------------
+
+#### create an addon
 ```
-# create an addon
 ember addon ember-rdfa-editor-your-name-plugin
-# add the package scope to index.js and package.json
+```
+#### add the package scope to index.js and package.json
+```
 emacs
-# install this addon
+```
+#### install this addon
+```
 ember install @lblod/ember-rdfa-editor-plugin-generator
-# generate the plugin scaffold
+```
+#### generate the plugin scaffold
+```
 ember g editor-plugin your-name
 ```
 
-The following generated files should be modified to your liking:
 
-### `blueprints/@lblod/ember-rdfa-editor-your-name-plugin/index.js` 
+## Plugin development
+The following - generated - files should be modified to your liking:
+
+#### `blueprints/@lblod/ember-rdfa-editor-your-name-plugin/index.js` 
 This is a default blueprint which will add your plugin to the configured profile when it's installed
 
-### `addon/services/rdfa-editor-my-test-plugin.js` 
+#### `addon/services/rdfa-editor-your-name-plugin.js` 
 The service providing hints to the editor, the execute task will be called when the content of the editor is updated. 
 
-### `addon/components/editor-plugins/my-test-card.js` and `addon/templates/components/editor-plugins/my-test-card.hbs` 
+#### `addon/components/editor-plugins/your-name-card.js` and `addon/templates/components/editor-plugins/your-name-card.hbs` 
 These components handle the display of hints and perform the necessary actions when they are triggered (eg applying the hint in the editor)
 
 Contributing
