@@ -1,7 +1,6 @@
 import { getOwner } from '@ember/application';
 import Service from '@ember/service';
 import EmberObject, { computed } from '@ember/object';
-import moment from 'moment';
 import { task } from 'ember-concurrency';
 
 /**
@@ -34,12 +33,18 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
   execute: task(function * (hrId, contexts, hintsRegistry, editor) {
     if (contexts.length === 0) return [];
 
-    const hints = contexts.filter((context) => detectRelevantContext).forEach((context) => {
-      return generateHintsForContext(context);
+    const hints = [];
+    contexts.forEach((context) => {
+      let relevantContext = this.detectRelevantContext(context)
+      if (relevantContext) {
+        hintsRegistry.removeHintsInRegion(context.region, hrId, this.get('who'));
+        hints.pushObjects(this.generateHintsForContext(context));
+      }
     });
-
-
-    return hints.forEach( (hint) => generateCard(hint));
+    const cards = hints.map( (hint) => this.generateCard(hrId, hintsRegistry, editor, hint));
+    if(cards.length > 0){
+      hintsRegistry.addHints(hrId, this.get('who'), cards);
+    }
   }).restartable(),
 
   /**
@@ -54,7 +59,7 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    * @private
    */
   detectRelevantContext(context){
-    return true;
+    return context.text.toLowerCase().indexOf('hello') >= 0;
   },
 
 
@@ -81,7 +86,6 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    * @method generateCard
    *
    * @param {string} hrId Unique identifier of the event in the hintsRegistry
-   * @param {Object} rdfaAnnotation object
    * @param {Object} hintsRegistry Registry of hints in the editor
    * @param {Object} editor The RDFa editor instance
    * @param {Object} hint containing the hinted string and the location of this string
@@ -90,11 +94,12 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    *
    * @private
    */
-  generateCard(hrId, rdfaAnnotation, hintsRegistry, editor, hint){
+  generateCard(hrId, hintsRegistry, editor, hint){
     return EmberObject.create({
       info: {
         label: this.get('who'),
         plainValue: hint.text,
+        htmlString: '<b>hello world</b>',
         location: hint.location,
         hrId, hintsRegistry, editor
       },
@@ -116,15 +121,15 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    */
   generateHintsForContext(context){
     const hints = [];
-    const text = context.text;
-    const location = this.normalizeLocation([0, stringToScan.length], context.region);
-    hints.push({text, location})
+    const index = context.text.toLowerCase().indexOf('hello');
+    const text = context.text.slice(index, index+5);
+    const location = this.normalizeLocation([index, index + 5], context.region);
+    hints.push({text, location});
     return hints;
   }
 });
 
 RdfaEditor<%= classifiedModuleName %>Plugin.reopen({
-  who: 'editor-plugins/<%= dasherizedModuleName %>-card',
-
+  who: 'editor-plugins/<%= dasherizedModuleName %>-card'
 });
 export default RdfaEditor<%= classifiedModuleName %>Plugin;

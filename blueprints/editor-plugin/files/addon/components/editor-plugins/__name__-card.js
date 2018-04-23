@@ -47,8 +47,8 @@ export default Component.extend({
   actions: {
     insert(){
       let mappedLocation = this.get('hintsRegistry').updateLocationToCurrentIndex(this.get('hrId'), this.get('location'));
-      this.get('hintsRegistry').removeHintsAtLocation(this.get('location'), this.get('hrId'), 'editor-plugins/date-card');
-      this.get('editor').replaceTextWithHTML(...mappedLocation, this.get('info').value);
+      this.get('hintsRegistry').removeHintsAtLocation(this.get('location'), this.get('hrId'), 'editor-plugins/<%= dasherizedModuleName %>-card');
+      this.get('editor').replaceTextWithHTML(...mappedLocation, this.get('info').htmlString);
     }
   }
 });
