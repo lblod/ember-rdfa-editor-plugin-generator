@@ -5,6 +5,7 @@ module.exports = {
   afterInstall(options) {
     // Perform extra work here.
     this.addAddonToProject('ember-cli-release');
+    this.addAddonToProject('ember-cli-update');
     return this.addAddonToProject('ember-concurrency');
   }
 };
