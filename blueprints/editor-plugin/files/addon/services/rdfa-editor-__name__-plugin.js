@@ -19,7 +19,7 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
   },
 
   /**
-   * Restartable task to handle the incoming events from the editor dispatcher
+   * task to handle the incoming events from the editor dispatcher
    *
    * @method execute
    *
@@ -45,7 +45,7 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
     if(cards.length > 0){
       hintsRegistry.addHints(hrId, this.get('who'), cards);
     }
-  }).restartable(),
+  }),
 
   /**
    * Given context object, tries to detect a context the plugin can work on
