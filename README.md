@@ -22,9 +22,9 @@ Usage
 ```
 ember addon ember-rdfa-editor-your-name-plugin
 ```
-#### add the package scope to index.js and package.json
+#### add the package scope to package.json
 ```
-emacs
+emacs # (or your editor of choice)
 ```
 #### install this addon
 ```
