@@ -45,7 +45,14 @@ export default Component.extend({
   hintsRegistry: reads('info.hintsRegistry'),
 
   actions: {
-    insert(){
+    /**
+     * action to update the text an existing dom node
+     *
+     * @method updateText
+     *
+     * @private
+     */
+    updateText(){
       this.get('hintsRegistry').removeHintsAtLocation(this.get('location'), this.get('hrId'), 'editor-plugins/<%= dasherizedModuleName %>-card');
       const mappedLocation = this.get('hintsRegistry').updateLocationToCurrentIndex(this.get('hrId'), this.get('location'));
       this.get('editor').replaceTextWithHTML(...mappedLocation, this.get('info').htmlString);
