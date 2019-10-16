@@ -15,7 +15,7 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
 
   init(){
     this._super(...arguments);
-    const config = getOwner(this).resolveRegistration('config:environment');
+    getOwner(this).resolveRegistration('config:environment');
   },
 
   /**
