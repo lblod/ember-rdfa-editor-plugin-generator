@@ -127,6 +127,7 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
         plainValue: hint.text,
         htmlString: '<b>hello world</b>',
         location: hint.location,
+        typeof: this.relevantRdfType,
         hrId, hintsRegistry, editor
       },
       location: hint.location,

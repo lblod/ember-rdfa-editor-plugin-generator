@@ -56,6 +56,26 @@ export default Component.extend({
       this.get('hintsRegistry').removeHintsAtLocation(this.get('location'), this.get('hrId'), 'editor-plugins/<%= dasherizedModuleName %>-card');
       const mappedLocation = this.get('hintsRegistry').updateLocationToCurrentIndex(this.get('hrId'), this.get('location'));
       this.get('editor').replaceTextWithHTML(...mappedLocation, this.get('info').htmlString);
+    },
+
+    /**
+     * action to update the rdf attributes of an existing dom node
+     *
+     * @method updateRdf
+     *
+     * @private
+     */
+    updateRdf(){
+      this.get('hintsRegistry').removeHintsAtLocation(mappedLocation, this.get('hrId'), 'editor-plugins/attendee-list-card');
+      const mappedLocation = this.get('hintsRegistry').updateLocationToCurrentIndex(this.get('hrId'), this.get('location'));
+
+      const selection = this.editor.selectContext(mappedLocation, { typeof: this.info.typeof });
+      this.editor.update(selection, {
+        set: {
+          innerHTML: 'desired content'
+        }
+      });
+      this.hintsRegistry.removeHintsAtLocation(this.location, this.hrId, this.who);
     }
   }
 });
