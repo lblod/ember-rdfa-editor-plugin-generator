@@ -16,6 +16,8 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
   init(){
     this._super(...arguments);
     getOwner(this).resolveRegistration('config:environment');
+    this.set('keyword', 'hello');
+    this.set('relevantRdfType', 'http://xmlns.com/foaf/0.1/Person');
   },
 
   /**
@@ -57,10 +59,36 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    * @private
    */
   detectRelevantContext(context){
-    return context.text.toLowerCase().indexOf('hello') >= 0;
+    return this.detectKeywordInContext(context);
   },
 
+  /**
+   * Given context object, tries to detect a keyword in it
+   *
+   * @method detectKeywordInContext
+   *
+   * @param {Object} context Text snippet at a specific location with an RDFa context
+   *
+   * @private
+   */
+  detectKeywordInContext(context){
+    return context && context.text.toLowerCase().indexOf(this.keyword) >= 0;
+  },
 
+  /**
+   * Given context object, checks if the context is of a given type
+   *
+   * @method detectContextOfRdfType
+   *
+   * @param {Object} context Text snippet at a specific location with an RDFa context
+   *
+   * @private
+   */
+  detectContextOfRdfType(context){
+    const lastTriple = context.context.slice(-1)[0];
+    return lastTriple.predicate === 'a' &&
+           lastTriple.object === this.relevantRdfType;
+  },
 
   /**
    * Maps location of substring back within reference location
@@ -119,9 +147,9 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    */
   generateHintsForContext(context){
     const hints = [];
-    const index = context.text.toLowerCase().indexOf('hello');
-    const text = context.text.slice(index, index+5);
-    const location = this.normalizeLocation([index, index + 5], context.region);
+    const index = context.text.toLowerCase().indexOf(this.keyword);
+    const text = context.text.slice(index, index + this.keyword.length);
+    const location = this.normalizeLocation([index, index + this.keyword.length], context.region);
     hints.push({text, location});
     return hints;
   }
