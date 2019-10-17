@@ -36,7 +36,7 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
   execute: task(function * (hrId, contexts, hintsRegistry, editor) {
     const hints = [];
     contexts
-      .filter(this.detectRelevantContext)
+      .filter(this.detectRelevantContext.bind(this))
       .forEach(context => {
         hintsRegistry.removeHintsInRegion(context.region, hrId, this.get('who'));
         hints.pushObjects(this.generateHintsForContext(context));
