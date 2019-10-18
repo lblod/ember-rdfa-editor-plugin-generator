@@ -1,6 +1,7 @@
+/* eslint-disable require-yield */
 import { getOwner } from '@ember/application';
 import Service from '@ember/service';
-import EmberObject, { computed } from '@ember/object';
+import EmberObject from '@ember/object';
 import { task } from 'ember-concurrency';
 
 /**
@@ -15,7 +16,9 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
 
   init(){
     this._super(...arguments);
-    const config = getOwner(this).resolveRegistration('config:environment');
+    getOwner(this).resolveRegistration('config:environment');
+    this.set('keyword', 'hello');
+    this.set('relevantRdfType', 'http://xmlns.com/foaf/0.1/Person');
   },
 
   /**
@@ -31,16 +34,14 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    * @public
    */
   execute: task(function * (hrId, contexts, hintsRegistry, editor) {
-    if (contexts.length === 0) return [];
-
     const hints = [];
-    contexts.forEach((context) => {
-      let relevantContext = this.detectRelevantContext(context)
-      if (relevantContext) {
+    contexts
+      .filter(this.detectRelevantContext.bind(this))
+      .forEach(context => {
         hintsRegistry.removeHintsInRegion(context.region, hrId, this.get('who'));
         hints.pushObjects(this.generateHintsForContext(context));
-      }
-    });
+      });
+
     const cards = hints.map( (hint) => this.generateCard(hrId, hintsRegistry, editor, hint));
     if(cards.length > 0){
       hintsRegistry.addHints(hrId, this.get('who'), cards);
@@ -59,10 +60,36 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    * @private
    */
   detectRelevantContext(context){
-    return context.text.toLowerCase().indexOf('hello') >= 0;
+    return this.detectKeywordInContext(context);
   },
 
+  /**
+   * Given context object, tries to detect a keyword in it
+   *
+   * @method detectKeywordInContext
+   *
+   * @param {Object} context Text snippet at a specific location with an RDFa context
+   *
+   * @private
+   */
+  detectKeywordInContext(context){
+    return context && context.text.toLowerCase().indexOf(this.keyword) >= 0;
+  },
 
+  /**
+   * Given context object, checks if the context is of a given type
+   *
+   * @method detectContextOfRdfType
+   *
+   * @param {Object} context Text snippet at a specific location with an RDFa context
+   *
+   * @private
+   */
+  detectContextOfRdfType(context){
+    const lastTriple = context.context.slice(-1)[0];
+    return lastTriple.predicate === 'a' &&
+           lastTriple.object === this.relevantRdfType;
+  },
 
   /**
    * Maps location of substring back within reference location
@@ -101,6 +128,7 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
         plainValue: hint.text,
         htmlString: '<b>hello world</b>',
         location: hint.location,
+        typeof: this.relevantRdfType,
         hrId, hintsRegistry, editor
       },
       location: hint.location,
@@ -121,9 +149,9 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    */
   generateHintsForContext(context){
     const hints = [];
-    const index = context.text.toLowerCase().indexOf('hello');
-    const text = context.text.slice(index, index+5);
-    const location = this.normalizeLocation([index, index + 5], context.region);
+    const index = context.text.toLowerCase().indexOf(this.keyword);
+    const text = context.text.slice(index, index + this.keyword.length);
+    const location = this.normalizeLocation([index, index + this.keyword.length], context.region);
     hints.push({text, location});
     return hints;
   }
