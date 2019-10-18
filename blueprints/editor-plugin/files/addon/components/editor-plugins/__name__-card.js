@@ -55,7 +55,11 @@ export default Component.extend({
     updateText(){
       this.get('hintsRegistry').removeHintsAtLocation(this.get('location'), this.get('hrId'), 'editor-plugins/<%= dasherizedModuleName %>-card');
       const mappedLocation = this.get('hintsRegistry').updateLocationToCurrentIndex(this.get('hrId'), this.get('location'));
-      this.get('editor').replaceTextWithHTML(...mappedLocation, this.get('info').htmlString);
+
+      const selection = this.editor.selectHighlight(mappedLocation);
+      this.editor.update(selection, {
+        set: { innerHTML: 'desired content goes here' }
+      });
     },
 
     /**
@@ -72,7 +76,7 @@ export default Component.extend({
       const selection = this.editor.selectContext(mappedLocation, { typeof: this.info.typeof });
       this.editor.update(selection, {
         set: {
-          innerHTML: 'desired content'
+          innerHTML: 'desired content goes here'
         }
       });
       this.hintsRegistry.removeHintsAtLocation(this.location, this.hrId, this.who);
