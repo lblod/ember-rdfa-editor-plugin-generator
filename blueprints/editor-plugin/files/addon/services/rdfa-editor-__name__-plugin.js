@@ -24,23 +24,32 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    * @method execute
    *
    * @param {string} hrId Unique identifier of the event in the hintsRegistry
-   * @param {Array} contexts RDFa contexts of the text snippets the event applies on
+   * @param {Array} rdfaBlocks RDFa blocks giving the context of the text snippets the event applies on
    * @param {Object} hintsRegistry Registry of hints in the editor
    * @param {Object} editor The RDFa editor instance
    *
    * @public
    */
-  execute: task(function * (hrId, contexts, hintsRegistry, editor) {
-    if (contexts.length === 0) return [];
+  execute: task(function * (hrId, rdfaBlocks, hintsRegistry, editor) {
+    if (rdfaBlocks.length === 0) return [];
 
     const hints = [];
-    contexts.forEach((context) => {
-      let relevantContext = this.detectRelevantContext(context)
+    /* --- Detect relevant context --- */
+    rdfaBlocks.forEach((rdfaBlock) => {
+      let relevantContext = this.detectRelevantContext(rdfaBlock);
       if (relevantContext) {
-        hintsRegistry.removeHintsInRegion(context.region, hrId, this.get('who'));
-        hints.pushObjects(this.generateHintsForContext(context));
+        hintsRegistry.removeHintsInRegion(rdfaBlock.region, hrId, this.get('who'));
+        hints.pushObjects(this.generateHintsForContext(rdfaBlock));
       }
     });
+    /* --- Or get rich nodes matching with condition --- */
+    const uniqueRichNodes = editor.findUniqueRichNodes(rdfaBlocks, { typeof: 'http://data.vlaanderen.be/ns/besluit#Besluit' });
+    uniqueRichNodes.forEach((richNode) => {
+      hintsRegistry.removeHintsInRegion([richNode.start, richNode.end], hrId, this.get('who'));
+      hints.pushObjects(this.generateHintsForRichNode(richNode));
+    });
+    /* --- End --- */
+
     const cards = hints.map( (hint) => this.generateCard(hrId, hintsRegistry, editor, hint));
     if(cards.length > 0){
       hintsRegistry.addHints(hrId, this.get('who'), cards);
@@ -48,18 +57,18 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
   }),
 
   /**
-   * Given context object, tries to detect a context the plugin can work on
+   * Given a rdfa block, tries to detect a context the plugin can work on
    *
    * @method detectRelevantContext
    *
-   * @param {Object} context Text snippet at a specific location with an RDFa context
+   * @param {Object} rdfaBlock Text snippet at a specific location with an RDFa context
    *
    * @return {String} URI of context if found, else empty string.
    *
    * @private
    */
-  detectRelevantContext(context){
-    return context.text.toLowerCase().indexOf('hello') >= 0;
+  detectRelevantContext(rdfaBlock){
+    return rdfaBlock.text.toLowerCase().indexOf('hello') >= 0;
   },
 
 
@@ -109,22 +118,44 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
   },
 
   /**
-   * Generates a hint, given a context
+   * Generates a hint, given a rdfa block
    *
    * @method generateHintsForContext
    *
-   * @param {Object} context Text snippet at a specific location with an RDFa context
+   * @param {Object} rdfaBlock Text snippet at a specific location with an RDFa context
    *
    * @return {Object} [{dateString, location}]
    *
    * @private
    */
-  generateHintsForContext(context){
+  generateHintsForContext(rdfaBlock){
     const hints = [];
-    const index = context.text.toLowerCase().indexOf('hello');
-    const text = context.text.slice(index, index+5);
-    const location = this.normalizeLocation([index, index + 5], context.region);
+    const index = rdfaBlock.text.toLowerCase().indexOf('hello');
+    const text = rdfaBlock.text.slice(index, index+5);
+    const location = this.normalizeLocation([index, index + 5], rdfaBlock.region);
     hints.push({text, location});
+    return hints;
+  },
+
+  /**
+   * Generates a hint, given a rich node
+   *
+   * @method generateHintsForRichNode
+   *
+   * @param {Object} richNode A rich node matching with our conditions
+   *
+   * @return {Object} [{dateString, location}]
+   *
+   * @private
+   */
+  generateHintsForRichNode(richNode) {
+    const hints = [];
+    const uri = richNode.rdfaAttributes.resource;
+    hints.push({
+      typeof: richNode.rdfaAttributes.typeof,
+      location: richNode.region,
+      uri
+    });
     return hints;
   }
 });
