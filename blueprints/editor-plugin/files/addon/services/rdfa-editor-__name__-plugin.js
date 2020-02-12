@@ -42,13 +42,16 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
         hints.pushObjects(this.generateHintsForRdfaBlock(rdfaBlock));
       }
     });
-    /* --- Or get rich nodes matching with condition --- */
-    const uniqueRichNodes = editor.findUniqueRichNodes(rdfaBlocks, { typeof: 'http://data.vlaanderen.be/ns/besluit#Besluit' });
-    uniqueRichNodes.forEach((richNode) => {
-      hintsRegistry.removeHintsInRegion([richNode.start, richNode.end], hrId, this.get('who'));
-      hints.pushObjects(this.generateHintsForRichNode(richNode));
-    });
-    /* --- End --- */
+    /* --- A helper also exists to find rich nodes in the rdfa blocks with specific rdfa attributes : --- */
+    /*const richNodes = editor.findUniqueRichNodes(
+      rdfaBlocks,
+      {
+        resource: '...',
+        property: '...',
+        typeof: '...' ,
+        datatype: '...'
+      }
+    );*/
 
     const cards = hints.map( (hint) => this.generateCard(hrId, hintsRegistry, editor, hint));
     if(cards.length > 0){
@@ -134,28 +137,6 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
     const text = rdfaBlock.text.slice(index, index+5);
     const location = this.normalizeLocation([index, index + 5], rdfaBlock.region);
     hints.push({text, location});
-    return hints;
-  },
-
-  /**
-   * Generates a hint, given a rich node
-   *
-   * @method generateHintsForRichNode
-   *
-   * @param {Object} richNode A rich node matching with our conditions
-   *
-   * @return {Object} [{dateString, location}]
-   *
-   * @private
-   */
-  generateHintsForRichNode(richNode) {
-    const hints = [];
-    const uri = richNode.rdfaAttributes.resource;
-    hints.push({
-      typeof: richNode.rdfaAttributes.typeof,
-      location: richNode.region,
-      uri
-    });
     return hints;
   }
 });
