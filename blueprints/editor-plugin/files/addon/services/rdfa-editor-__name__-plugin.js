@@ -24,23 +24,35 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    * @method execute
    *
    * @param {string} hrId Unique identifier of the event in the hintsRegistry
-   * @param {Array} contexts RDFa contexts of the text snippets the event applies on
+   * @param {Array} rdfaBlocks RDFa blocks giving the context of the text snippets the event applies on
    * @param {Object} hintsRegistry Registry of hints in the editor
    * @param {Object} editor The RDFa editor instance
    *
    * @public
    */
-  execute: task(function * (hrId, contexts, hintsRegistry, editor) {
-    if (contexts.length === 0) return [];
+  execute: task(function * (hrId, rdfaBlocks, hintsRegistry, editor) {
+    if (rdfaBlocks.length === 0) return [];
 
     const hints = [];
-    contexts.forEach((context) => {
-      let relevantContext = this.detectRelevantContext(context)
-      if (relevantContext) {
-        hintsRegistry.removeHintsInRegion(context.region, hrId, this.get('who'));
-        hints.pushObjects(this.generateHintsForContext(context));
+    /* --- Detect relevant rdfa block --- */
+    rdfaBlocks.forEach((rdfaBlock) => {
+      let relevantRdfaBlock = this.detectRelevantRdfaBlock(rdfaBlock);
+      if (relevantRdfaBlock) {
+        hintsRegistry.removeHintsInRegion(rdfaBlock.region, hrId, this.get('who'));
+        hints.pushObjects(this.generateHintsForRdfaBlock(rdfaBlock));
       }
     });
+    /* --- A helper also exists to find rich nodes in the rdfa blocks with specific rdfa attributes : --- */
+    /*const richNodes = editor.findUniqueRichNodes(
+      rdfaBlocks,
+      {
+        resource: '...',
+        property: '...',
+        typeof: '...' ,
+        datatype: '...'
+      }
+    );*/
+
     const cards = hints.map( (hint) => this.generateCard(hrId, hintsRegistry, editor, hint));
     if(cards.length > 0){
       hintsRegistry.addHints(hrId, this.get('who'), cards);
@@ -48,18 +60,18 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
   }),
 
   /**
-   * Given context object, tries to detect a context the plugin can work on
+   * Given a rdfa block, tries to detect a block the plugin can work on
    *
-   * @method detectRelevantContext
+   * @method detectRelevantRdfaBlock
    *
-   * @param {Object} context Text snippet at a specific location with an RDFa context
+   * @param {Object} rdfaBlock Text snippet at a specific location with an RDFa context
    *
-   * @return {String} URI of context if found, else empty string.
+   * @return {String} URI of rdfa block if found, else empty string.
    *
    * @private
    */
-  detectRelevantContext(context){
-    return context.text.toLowerCase().indexOf('hello') >= 0;
+  detectRelevantRdfaBlock(rdfaBlock) {
+    return rdfaBlock.text.toLowerCase().indexOf('hello') >= 0;
   },
 
 
@@ -76,7 +88,7 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    *
    * @private
    */
-  normalizeLocation(location, reference){
+  normalizeLocation(location, reference) {
     return [location[0] + reference[0], location[1] + reference[0]];
   },
 
@@ -94,7 +106,7 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    *
    * @private
    */
-  generateCard(hrId, hintsRegistry, editor, hint){
+  generateCard(hrId, hintsRegistry, editor, hint) {
     return EmberObject.create({
       info: {
         label: this.get('who'),
@@ -109,21 +121,21 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
   },
 
   /**
-   * Generates a hint, given a context
+   * Generates a hint, given a rdfa block
    *
-   * @method generateHintsForContext
+   * @method generateHintsForRdfaBlock
    *
-   * @param {Object} context Text snippet at a specific location with an RDFa context
+   * @param {Object} rdfaBlock Text snippet at a specific location with an RDFa context
    *
    * @return {Object} [{dateString, location}]
    *
    * @private
    */
-  generateHintsForContext(context){
+  generateHintsForRdfaBlock(rdfaBlock) {
     const hints = [];
-    const index = context.text.toLowerCase().indexOf('hello');
-    const text = context.text.slice(index, index+5);
-    const location = this.normalizeLocation([index, index + 5], context.region);
+    const index = rdfaBlock.text.toLowerCase().indexOf('hello');
+    const text = rdfaBlock.text.slice(index, index+5);
+    const location = this.normalizeLocation([index, index + 5], rdfaBlock.region);
     hints.push({text, location});
     return hints;
   }
