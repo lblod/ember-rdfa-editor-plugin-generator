@@ -34,12 +34,12 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
     if (rdfaBlocks.length === 0) return [];
 
     const hints = [];
-    /* --- Detect relevant context --- */
+    /* --- Detect relevant rdfa block --- */
     rdfaBlocks.forEach((rdfaBlock) => {
-      let relevantContext = this.detectRelevantContext(rdfaBlock);
-      if (relevantContext) {
+      let relevantRdfaBlock = this.detectRelevantRdfaBlock(rdfaBlock);
+      if (relevantRdfaBlock) {
         hintsRegistry.removeHintsInRegion(rdfaBlock.region, hrId, this.get('who'));
-        hints.pushObjects(this.generateHintsForContext(rdfaBlock));
+        hints.pushObjects(this.generateHintsForRdfaBlock(rdfaBlock));
       }
     });
     /* --- Or get rich nodes matching with condition --- */
@@ -57,17 +57,17 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
   }),
 
   /**
-   * Given a rdfa block, tries to detect a context the plugin can work on
+   * Given a rdfa block, tries to detect a block the plugin can work on
    *
-   * @method detectRelevantContext
+   * @method detectRelevantRdfaBlock
    *
    * @param {Object} rdfaBlock Text snippet at a specific location with an RDFa context
    *
-   * @return {String} URI of context if found, else empty string.
+   * @return {String} URI of rdfa block if found, else empty string.
    *
    * @private
    */
-  detectRelevantContext(rdfaBlock){
+  detectRelevantRdfaBlock(rdfaBlock) {
     return rdfaBlock.text.toLowerCase().indexOf('hello') >= 0;
   },
 
@@ -85,7 +85,7 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    *
    * @private
    */
-  normalizeLocation(location, reference){
+  normalizeLocation(location, reference) {
     return [location[0] + reference[0], location[1] + reference[0]];
   },
 
@@ -103,7 +103,7 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    *
    * @private
    */
-  generateCard(hrId, hintsRegistry, editor, hint){
+  generateCard(hrId, hintsRegistry, editor, hint) {
     return EmberObject.create({
       info: {
         label: this.get('who'),
@@ -120,7 +120,7 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
   /**
    * Generates a hint, given a rdfa block
    *
-   * @method generateHintsForContext
+   * @method generateHintsForRdfaBlock
    *
    * @param {Object} rdfaBlock Text snippet at a specific location with an RDFa context
    *
@@ -128,7 +128,7 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    *
    * @private
    */
-  generateHintsForContext(rdfaBlock){
+  generateHintsForRdfaBlock(rdfaBlock) {
     const hints = [];
     const index = rdfaBlock.text.toLowerCase().indexOf('hello');
     const text = rdfaBlock.text.slice(index, index+5);
