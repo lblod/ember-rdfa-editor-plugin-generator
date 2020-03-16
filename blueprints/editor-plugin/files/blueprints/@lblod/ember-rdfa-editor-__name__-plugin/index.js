@@ -20,17 +20,7 @@ module.exports = {
 
     if( existsSync(profilesFile) ){
       try {
-        await this.insertPluginNameAtKey("all", pluginName);
-        await this.insertPluginNameAtKey("default", pluginName, " "); /* the extra space here,
-                                                                         makes the line different
-                                                                         from the inserted line
-                                                                         above.  This is makes
-                                                                         insertIntoFile consider
-                                                                         the lines to be different,
-                                                                         and hence insert the
-                                                                         contents.  Sorry for the
-                                                                         somewhat uglier generated
-                                                                         files. */
+        await this.insertPluginNameAtKey("default", pluginName);
       } catch (err) {
         throw 'Failed to insert all contents ' + err;
       }

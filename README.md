@@ -58,6 +58,29 @@ This package assumes you follow these conventions:
   These components handle the display of hints and perform the necessary actions when they are triggered (eg applying the hint in the editor)
 
 
+## How To
+
+### Automatically support multiple profiles
+
+  The editor supports multiple profiles.  Each profile may have
+  different plugins enabled.  When your plugin is installed it is
+  added to the deafult profile automatically.  If you want your plugin
+  to be added to multiple profiles, follow this how-to.
+
+  In order to add the plugin to a new profile, we need to overwrite
+  the index.js blueprint of your addon.  See
+  `@lblod/ember-rdfa-editor-your-name-plugin/index.js`.
+
+  Below the line adding your plugin to the 'default` set, add the
+  plugin to a new key.  Because generators don't allow you to add the
+  same line twice, you'll need to add a space at the end.  An example would be:
+
+    await this.insertPluginNameAtKey("all", "rdfa-editor-your-name-plugin", " ");
+
+  That's it!  When your plugin is added through `ember install` it
+  will now be added to both the `default` and the `all` profiles.
+
+
 ## Contributing
 
 See the [Contributing](CONTRIBUTING.md) guide for details.
