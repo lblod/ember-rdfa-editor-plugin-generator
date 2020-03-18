@@ -53,7 +53,7 @@ This package assumes you follow these conventions:
 
   The service providing hints to the editor, the execute task will be called when the content of the editor is updated.
 
-##### `addon/components/editor-plugins/your-name-card.js` and `addon/templates/components/editor-plugins/your-name-card.hbs`
+##### `addon/components/editor-plugins/your-name-card.js` and `addon/components/editor-plugins/your-name-card.hbs`
 
   These components handle the display of hints and perform the necessary actions when they are triggered (eg applying the hint in the editor)
 
