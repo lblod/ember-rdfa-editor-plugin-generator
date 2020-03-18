@@ -1,4 +1,5 @@
 import Service from '@ember/service';
+import normalizeLocation from '../utils/normalize-location';
 
 /**
  * Service responsible for correct annotation of dates
@@ -33,7 +34,7 @@ export default class RdfaEditor<%= classifiedModuleName %>Plugin extends Service
       let idx = rdfaBlock.text.toLowerCase().indexOf('hello');
       if( idx !== -1 ) {
         // the hintsregistry needs to know the location with respect to the document
-        const absoluteLocation = this.normalizeLocation( [idx, idx + 'hello'.length], rdfaBlock.region );
+        const absoluteLocation = normalizeLocation( [idx, idx + 'hello'.length], rdfaBlock.region );
 
         hints.push( {
           // info for the hintsRegistry
@@ -49,21 +50,5 @@ export default class RdfaEditor<%= classifiedModuleName %>Plugin extends Service
     }
     <%= "TODO: document editor.findUniqueRichNodes and reference editor docs" && "" %>
     hintsRegistry.addHints(hrId, "<%= /*HINT_SCOPE*/ dasherizedModuleName %>-scope", hints);
-  }
-
-  /**
-   * Maps location of substring back within reference location
-   *
-   * @method normalizeLocation
-   *
-   * @param {[int,int]} [start, end] Location withing string
-   * @param {[int,int]} [start, end] reference location
-   *
-   * @return {[int,int]} [start, end] absolute location
-   *
-   * @private
-   */
-  normalizeLocation(location, reference) {
-    return [location[0] + reference[0], location[1] + reference[0]];
   }
 }
