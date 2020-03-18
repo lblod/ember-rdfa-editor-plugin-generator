@@ -1,7 +1,6 @@
 import { getOwner } from '@ember/application';
 import Service from '@ember/service';
 import EmberObject, { computed } from '@ember/object';
-import { task } from 'ember-concurrency-decorators';
 
 /**
  * Service responsible for correct annotation of dates
@@ -27,8 +26,7 @@ export default class RdfaEditor<%= classifiedModuleName %>Plugin extends Service
    *
    * @public
    */
-  @task
-  *execute(hrId, rdfaBlocks, hintsRegistry, editor) {
+  execute(hrId, rdfaBlocks, hintsRegistry, editor) {
     if (rdfaBlocks.length === 0) return [];
 
     const hints = [];

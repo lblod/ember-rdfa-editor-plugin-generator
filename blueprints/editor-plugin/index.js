@@ -6,8 +6,6 @@ module.exports = {
     // Perform extra work here.
     this.addAddonToProject('ember-cli-release');
     this.addAddonToProject('ember-cli-update');
-    this.addAddonToProject('ember-concurrency');
-    this.addAddonToProject('ember-concurrency-decorators');
     return true;
   }
 };
