@@ -1,6 +1,4 @@
-import { getOwner } from '@ember/application';
 import Service from '@ember/service';
-import EmberObject, { computed } from '@ember/object';
 
 /**
  * Service responsible for correct annotation of dates
