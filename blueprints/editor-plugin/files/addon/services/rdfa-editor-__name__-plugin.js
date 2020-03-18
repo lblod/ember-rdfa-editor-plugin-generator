@@ -1,7 +1,7 @@
 import { getOwner } from '@ember/application';
 import Service from '@ember/service';
 import EmberObject, { computed } from '@ember/object';
-import { task } from 'ember-concurrency';
+import { task } from 'ember-concurrency-decorators';
 
 /**
  * Service responsible for correct annotation of dates
@@ -11,12 +11,9 @@ import { task } from 'ember-concurrency';
  * @constructor
  * @extends EmberService
  */
-const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
+export default class RdfaEditor<%= classifiedModuleName %>Plugin extends Service {
 
-  init(){
-    this._super(...arguments);
-    const config = getOwner(this).resolveRegistration('config:environment');
-  },
+  who = 'editor-plugins/<%= dasherizedModuleName %>-card'
 
   /**
    * task to handle the incoming events from the editor dispatcher
@@ -30,7 +27,8 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    *
    * @public
    */
-  execute: task(function * (hrId, rdfaBlocks, hintsRegistry, editor) {
+  @task
+  *execute(hrId, rdfaBlocks, hintsRegistry, editor) {
     if (rdfaBlocks.length === 0) return [];
 
     const hints = [];
@@ -57,7 +55,7 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
     if(cards.length > 0){
       hintsRegistry.addHints(hrId, this.get('who'), cards);
     }
-  }),
+  }
 
   /**
    * Given a rdfa block, tries to detect a block the plugin can work on
@@ -72,9 +70,7 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    */
   detectRelevantRdfaBlock(rdfaBlock) {
     return rdfaBlock.text.toLowerCase().indexOf('hello') >= 0;
-  },
-
-
+  }
 
   /**
    * Maps location of substring back within reference location
@@ -90,7 +86,7 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
    */
   normalizeLocation(location, reference) {
     return [location[0] + reference[0], location[1] + reference[0]];
-  },
+  }
 
   /**
    * Generates a card given a hint
@@ -118,7 +114,7 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
       location: hint.location,
       card: this.get('who')
     });
-  },
+  }
 
   /**
    * Generates a hint, given a rdfa block
@@ -139,9 +135,4 @@ const RdfaEditor<%= classifiedModuleName %>Plugin = Service.extend({
     hints.push({text, location});
     return hints;
   }
-});
-
-RdfaEditor<%= classifiedModuleName %>Plugin.reopen({
-  who: 'editor-plugins/<%= dasherizedModuleName %>-card'
-});
-export default RdfaEditor<%= classifiedModuleName %>Plugin;
+}
