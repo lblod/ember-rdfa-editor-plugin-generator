@@ -12,7 +12,7 @@ export default class <%= classifiedModuleName %>Card extends Component {
   @action
   insert() {
     const info = this.args.info;
-    info.hintsRegistry.removeHintsAtLocation( info.location, info.hrId, 'editor-plugins/<%= dasherizedModuleName %>-card' );
+    info.hintsRegistry.removeHintsAtLocation( info.location, info.hrId, "<%= /*HINT_SCOPE*/ dasherizedModuleName %>-scope");
     const mappedLocation = info.hintsRegistry.updateLocationToCurrentIndex(info.hrId, info.location);
     const selection = info.editor.selectHighlight( mappedLocation );
     info.editor.update( selection, {

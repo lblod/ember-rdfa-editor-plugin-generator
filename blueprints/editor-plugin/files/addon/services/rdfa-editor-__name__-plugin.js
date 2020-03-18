@@ -10,8 +10,6 @@ import Service from '@ember/service';
  */
 export default class RdfaEditor<%= classifiedModuleName %>Plugin extends Service {
 
-  who = 'editor-plugins/<%= dasherizedModuleName %>-card'
-
   /**
    * task to handle the incoming events from the editor dispatcher
    *
@@ -30,7 +28,7 @@ export default class RdfaEditor<%= classifiedModuleName %>Plugin extends Service
     const hints = [];
 
     for( const rdfaBlock of rdfaBlocks ){
-      hintsRegistry.removeHintsInRegion(rdfaBlock.region, hrId, this.who);
+      hintsRegistry.removeHintsInRegion(rdfaBlock.region, hrId, "<%= /*HINT_SCOPE*/ dasherizedModuleName %>-scope");
 
       let idx = rdfaBlock.text.toLowerCase().indexOf('hello');
       if( idx !== -1 ) {
@@ -40,17 +38,17 @@ export default class RdfaEditor<%= classifiedModuleName %>Plugin extends Service
         hints.push( {
           // info for the hintsRegistry
           location: absoluteLocation,
-          card: this.who,
+          card: "<%= /*HINT_CARD_NAME*/ `editor-plugins/${dasherizedModuleName}-card` %>",
           // any content you need to render the component and handle its actions
           info: {
             hrId, hintsRegistry, editor,
-            location: absoluteLocation
+            location: absoluteLocation,
           }
         });
       }
     }
     <%= "TODO: document editor.findUniqueRichNodes and reference editor docs" && "" %>
-    hintsRegistry.addHints(hrId, this.who, hints);
+    hintsRegistry.addHints(hrId, "<%= /*HINT_SCOPE*/ dasherizedModuleName %>-scope", hints);
   }
 
   /**
