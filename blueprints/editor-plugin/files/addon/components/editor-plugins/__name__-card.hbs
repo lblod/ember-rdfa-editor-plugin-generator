@@ -1,10 +1,12 @@
-<p class="u-spacer--tiny">{{@info.label}} <br>
-  <strong>{{@info.plainValue}}</strong>
-</p>
-
-<WuButtonGroup>
-  <WuButton @label="Juist" @size="small" @isNarrow={{true}} @command="ctrl + j" @commandlocation="below" @onClick={{this.insert}} />
-  <WuButton @label="Negeer" @size="tiny" @isLink={{true}} @isDark={{true}} @isNarrow={{true}} @command="esc" @commandLocation="below" @onClick={{null}} />
-</WuButtonGroup>
-
-{{yield}}
+<div class="modal-dialog__content">
+  <p class="u-spacer--tiny">
+    Execute <%= dasherizedModuleName %>
+    <br>
+    <strong>Do you want to execute your action?</strong>
+  </p>
+</div>
+<div class="modal-dialog__footer">
+  <WuButtonGroup>
+    <WuButton @label="Yes" @size="small" @isNarrow={{true}} @commandLocation="below" @onClick={{this.insert}} />
+  </WuButtonGroup>
+</div>
