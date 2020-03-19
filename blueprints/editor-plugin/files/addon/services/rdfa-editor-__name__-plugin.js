@@ -26,8 +26,6 @@ export default class RdfaEditor<%= classifiedModuleName %>Plugin extends Service
    * @public
    */
   execute(hrId, rdfaBlocks, hintsRegistry, editor) {
-    if (rdfaBlocks.length === 0) return [];
-
     const hints = [];
 
     for( const rdfaBlock of rdfaBlocks ){
