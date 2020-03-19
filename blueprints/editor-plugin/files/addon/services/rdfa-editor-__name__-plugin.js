@@ -2,7 +2,7 @@ import Service from '@ember/service';
 import normalizeLocation from '../utils/normalize-location';
 
 /**
- * Service responsible for correct annotation of dates
+ * Entry point for <%= classifiedModuleName %>
  *
  * @module editor-<%= dasherizedModuleName %>-plugin
  * @class RdfaEditor<%= classifiedModuleName %>Plugin
@@ -12,14 +12,16 @@ import normalizeLocation from '../utils/normalize-location';
 export default class RdfaEditor<%= classifiedModuleName %>Plugin extends Service {
 
   /**
-   * task to handle the incoming events from the editor dispatcher
+   * Handles the incoming events from the editor dispatcher.  Responsible for generating hint cards.
    *
    * @method execute
    *
-   * @param {string} hrId Unique identifier of the event in the hintsRegistry
-   * @param {Array} rdfaBlocks RDFa blocks giving the context of the text snippets the event applies on
-   * @param {Object} hintsRegistry Registry of hints in the editor
-   * @param {Object} editor The RDFa editor instance
+   * @param {string} hrId Unique identifier of the state in the HintsRegistry.  Allows the
+   * HintsRegistry to update absolute selected regions based on what a user has entered in between.
+   * @param {Array} rdfaBlocks Set of logical blobs of content which may have changed.  Each blob is
+   * either has a different semantic meaning, or is logically separated (eg: a separate list item).
+   * @param {Object} hintsRegistry Keeps track of where hints are positioned in the editor.
+   * @param {Object} editor Your public interface through which you can alter the document.
    *
    * @public
    */
