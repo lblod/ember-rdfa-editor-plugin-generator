@@ -43,7 +43,13 @@ The following - generated - files should be modified to your liking:
 This is a default blueprint which will add your plugin to the configured profile when it's installed
 
 #### `addon/services/rdfa-editor-your-name-plugin.js` 
-The service providing hints to the editor, the execute task will be called when the content of the editor is updated. 
+The service providing hints to the editor, the execute task will be called when the content of the editor is updated.
+It will do a few things:
+- search for the parts of the document that are interesting for the plugin
+- clear the region by remove preivous existing hints on this region of interest
+- create new hints
+
+/!\ Clearing the region is usually done by clearing the region passed to the execute method (`rdfaBlock.region`). But in some use cases, the region of interest is broader than that `rdfaBlock.region`. In this case, you need to call `removeHintsInRegion` on the region of interest relevantRdfaBlock.region()
 
 #### `addon/components/editor-plugins/your-name-card.js` and `addon/templates/components/editor-plugins/your-name-card.hbs` 
 These components handle the display of hints and perform the necessary actions when they are triggered (eg applying the hint in the editor)
