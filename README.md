@@ -80,7 +80,7 @@ This package assumes you follow these conventions:
   That's it!  When your plugin is added through `ember install` it
   will now be added to both the `default` and the `all` profiles.
 
-#### `addon/services/rdfa-editor-your-name-plugin.js` 
+#### `addon/services/rdfa-editor-your-name-plugin.js`
 The service providing hints to the editor, the execute task will be called when the content of the editor is updated.
 It will do a few things:
 - search for the parts of the document that are interesting for the plugin
