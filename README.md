@@ -80,6 +80,14 @@ This package assumes you follow these conventions:
   That's it!  When your plugin is added through `ember install` it
   will now be added to both the `default` and the `all` profiles.
 
+#### `addon/services/rdfa-editor-your-name-plugin.js` 
+The service providing hints to the editor, the execute task will be called when the content of the editor is updated.
+It will do a few things:
+- search for the parts of the document that are interesting for the plugin
+- clear the region by remove preivous existing hints on this region of interest
+- create new hints
+
+/!\ Clearing the region is usually done by clearing the region passed to the execute method (`rdfaBlock.region`). But in some use cases, the region of interest is broader than that `rdfaBlock.region`. In this case, you need to call `removeHintsInRegion` on the region of interest relevantRdfaBlock.region()
 
 ## Contributing
 
