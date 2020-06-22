@@ -1,6 +1,6 @@
 {
   "name": "@lblod/ember-rdfa-editor-plugin-generator",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Addon to simplify the creation of a plugin for ember-rdfa-editor",
   "keywords": [
     "ember-addon"
